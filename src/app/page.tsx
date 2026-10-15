@@ -314,9 +314,11 @@ export default function Home() {
         </div>
 
         {/* Projects Section Start */}
-        <div className="grid grid-cols-1 md:grid-cols-3 w-full max-w-[1400px] mx-auto mt-10">
+        <div className="flex flex-wrap justify-center items-start w-full max-w-[1400px] mx-auto mt-10">
           {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <div key={project.id} className="w-full md:w-1/3">
+              <ProjectCard project={project} index={index} />
+            </div>
           ))}
         </div>
         {/* Projects Section End */}
