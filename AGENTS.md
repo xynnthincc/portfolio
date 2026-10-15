@@ -32,15 +32,27 @@ Verification = `npm run build` + `npm run lint` + `npx tsc --noEmit`. There are 
 Projects, experience, nav items, and social links are hardcoded arrays at the top of the component that renders them (`page.tsx` `projects`, `ExperienceTimeline.tsx` `experiences`, `SiteChrome.tsx` `items` / `socialLinks`). Keep `SiteChrome`'s Projects dropdown in sync with `page.tsx` — same projects, different grouping.
 
 - `src/data/projects.tsx` and `src/components/StatsSection.tsx` are **orphaned** — nothing imports them. Editing them has no effect.
-- Project entry shape: `tech` is `{ label, icon? }[]` (the icon is optional because `public/techstack/` has no asset for Kotlin, C#, Unity or blockchain), `link` is set **only** when the project is really deployed, and `repo` is the GitHub source. `ProjectCard` renders "Visit Live" only when `link` exists.
-- Project copy is in Indonesian where the product is Indonesian (Foton, Hive, Haneul, BESTARI). Don't invent claims — the descriptions come from each project's README, GitHub description or live meta description.
+- **Only projects with a real screenshot of the live site are listed.** A preview is the entire point of the card, so source-only projects (BESTARI, Echoes of Steel) are deliberately left out rather than shown with a stand-in.
+- Project entry shape: `tech` is `{ label, icon? }[]` (the icon is optional because `public/techstack/` has no asset for every technology in use), `link` is set **only** when the project is really deployed, and `repo` is the GitHub source. `ProjectCard` renders "Visit Live" only when `link` exists, "View Code" when `repo` exists.
+- Project copy is in Indonesian where the product is Indonesian. Don't invent claims — descriptions come from each project's README, GitHub description or live meta description.
 - `year` is the repository's creation year, not a guess.
 
 ## Project previews
 
-Previews are real screenshots, not mockups: `node scripts/fetch-previews.mjs name=url ...` (thum.io, no API key). Deployed projects are captured from their live URL; the rest are captured from their GitHub repo page. Output lands in `public/proj/<name>.webp` and is skipped if it already exists.
+Every preview is a **1200x750 WebP** — a laptop-screen frame. The card renders it in `aspect-[16/10]`; do not reintroduce fixed pixel heights or `flex-grow`, which is what made the grid stretch vertically.
 
-Two gotchas the script already handles — don't undo them: GitHub's global nav is trimmed off repo captures, and `wait/10` plus `fullpage` is required or the Hive deployment captures as a blank white image. The script rejects near-blank captures rather than writing a useless preview.
+Workflow:
+
+- **Hand-captured screenshots** — drop a jpg/png into `public/proj/` and run `node scripts/normalize-previews.mjs`. Idempotent: files already at 1200x750 are skipped. `--force` reprocesses everything.
+- **Live URLs** — `node scripts/fetch-previews.mjs name=url ...` captures via thum.io and frames the result.
+
+Framing rules live in `scripts/lib/preview-frame.mjs` and are load-bearing:
+
+- `fit: 'cover'` anchored **top-left**. Cover fills the frame with no padding band; padding to 16:10 left a visible stripe under light-themed pages, and centre-anchoring sliced through the site logo. Wide captures crop from the right so the logo survives.
+- `fetch-previews.mjs` needs `wait/10`, and tries a viewport capture first with `fullpage` as a fallback — some deployments (Hive) return a blank viewport shot and only render under `fullpage`.
+- Blank captures are detected and rejected rather than written.
+
+Two Windows caveats the scripts already absorb: a running `next dev` holds files in `public/` open, so the normalizer reports failures per file and keeps going instead of aborting, and outputs are staged to `.part` before being swapped in.
 
 ## Performance conventions this site depends on
 

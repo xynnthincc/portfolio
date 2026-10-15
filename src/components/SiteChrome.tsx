@@ -20,18 +20,14 @@ const items = [
 				items: [
 					{ label: 'Foton', href: 'https://foton-six.vercel.app' },
 					{ label: 'Hive', href: 'https://hive-tawny-eight.vercel.app' },
-					{ label: 'Haneul Gacha Box', href: 'https://haneulid.vercel.app' },
+					{ label: 'Haneul', href: 'https://haneulid.vercel.app' },
 				],
 			},
 			{
 				label: 'Source Code',
 				items: [
-					{ label: 'CredChain', href: 'https://github.com/xynnthincc/CredChain' },
-					{ label: 'BESTARI', href: 'https://github.com/xynnthincc/BESTARI' },
-					{
-						label: 'Echoes of Steel',
-						href: 'https://github.com/xynnthincc/Echoes-Of-Steel',
-					},
+					{ label: 'Pactra', href: 'https://github.com/xynnthincc/CredChain' },
+					{ label: 'Darussurur', href: 'https://github.com/xynnthincc/spmb-darussurur' },
 				],
 			},
 		],

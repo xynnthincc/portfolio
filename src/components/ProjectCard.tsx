@@ -121,18 +121,17 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(
             </div>
 
             <motion.div
-              className={`relative w-full flex-grow rounded-xl overflow-hidden z-10 ${imageOrderClass}`}
+              className={`relative w-full aspect-[16/10] rounded-xl overflow-hidden z-10 ${imageOrderClass}`}
               initial={{ opacity: 0.7 }}
               whileHover={{ opacity: 1, scale: 1.05 }}
               transition={{ duration: 0.3 }}
             >
               <Image
                 src={project.imageSrc}
-                alt={`${project.title} image`}
-                width={500}
-                height={500}
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover w-full h-full"
+                alt={`${project.title} screenshot`}
+                fill
+                sizes="(max-width: 768px) 92vw, 30vw"
+                className="object-cover"
               />
             </motion.div>
           </div>

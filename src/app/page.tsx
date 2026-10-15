@@ -24,14 +24,14 @@ const Threads = dynamic(() => import("@/blocks/Backgrounds/Threads/Threads"), { 
 
 // Define your projects array.
 //
-// Every entry is a real project from github.com/xynnthincc. `year` is the year
-// the repository was created, not a guess. `link` is only set when the project
-// is actually deployed; `repo` is the source. Icons are optional because
-// public/techstack/ has no asset for Kotlin, C#, Unity or blockchain yet — the
-// label is always shown either way.
+// Only projects with a real screenshot of the live site are listed — a preview
+// is the whole point of the card, so anything without one (no deployed build,
+// only source) is left out rather than shown with a placeholder.
 //
-// Regenerate the preview screenshots with:
-//   node scripts/fetch-previews.mjs foton=https://foton-six.vercel.app ...
+// `imageSrc` must be a 1200x750 laptop-frame WebP in public/proj/. Drop a
+// screenshot in and run `node scripts/normalize-previews.mjs` to produce it.
+// `link` points at the deployment, `repo` at the source. Icons are optional
+// because public/techstack/ has no asset for every technology in use yet.
 const projects = [
   {
     id: 1,
@@ -74,13 +74,13 @@ const projects = [
   {
     id: 3,
     number: '03',
-    title: 'Haneul Gacha Box',
-    description: 'K-Pop Photocard Gacha',
+    title: 'Haneul',
+    description: 'Jastip & Pre-Order Platform',
     role: 'Full Stack Developer',
     year: '2026',
     type: 'Web App',
     detailedDescription:
-      'Blind box photocard K-pop: 5 grup, 45+ member, sistem token untuk penukaran, animasi box opening, dan confetti. Alur lengkap dari landing hingga hasil gacha.',
+      'Platform jastip dan pre-order: belanja dan pre-order apa saja, dari luar negeri sampai toko lokal, dengan status yang transparan dari DP sampai resi. Dilengkapi katalog, batch pre-order, dan fitur gacha photocard.',
     tech: [
       { label: 'Next.js', icon: '/techstack/nextjs.svg' },
       { label: 'React', icon: '/techstack/react.svg' },
@@ -94,58 +94,38 @@ const projects = [
   {
     id: 4,
     number: '04',
-    title: 'CredChain',
-    description: 'AI Skill Passport',
+    title: 'Pactra',
+    description: 'Verifiable Work Record',
     role: 'Full Stack Developer',
     year: '2026',
     type: 'AI + Blockchain',
     detailedDescription:
-      'Skill passport terverifikasi: AI mengekstrak dan merapikan data kredensial, sementara blockchain BOT Chain memastikan sertifikat dapat disimpan, diverifikasi, dan dibagikan secara aman.',
+      'Ruang kerja terverifikasi: sepakati ruang lingkup, periksa buktinya, dan biarkan keputusan akhir tetap di tangan manusia. Dibangun di atas BOT Chain untuk menyimpan serta memverifikasi rekam kerja secara transparan.',
     tech: [
       { label: 'Next.js', icon: '/techstack/nextjs.svg' },
       { label: 'TypeScript' },
       { label: 'Blockchain' },
-      { label: 'AI' },
     ],
-    imageSrc: '/proj/credchain.webp',
+    imageSrc: '/proj/pactra.webp',
     repo: 'https://github.com/xynnthincc/CredChain',
   },
   {
     id: 5,
     number: '05',
-    title: 'BESTARI',
-    description: 'Asset Management App',
-    role: 'Android Developer',
+    title: 'SMP Plus YPP Darussurur',
+    description: 'School Website',
+    role: 'Full Stack Developer',
     year: '2026',
-    type: 'Android App',
+    type: 'Web App',
     detailedDescription:
-      'Aplikasi Android untuk digitalisasi aset dan sarana prasarana: katalog aset real-time, kontrol akses berbasis peran (Peminjam, Petugas, Admin), pelaporan kerusakan dengan unggah foto, serta ekspor laporan PDF dan Excel.',
+      'Website resmi SMP Plus YPP Darussurur: profil sekolah, halaman akademik, berita, galeri, dan penerimaan siswa baru dalam satu situs.',
     tech: [
-      { label: 'Kotlin' },
-      { label: 'Jetpack Compose' },
-      { label: 'Firebase' },
-      { label: 'Hilt' },
+      { label: 'Next.js', icon: '/techstack/nextjs.svg' },
+      { label: 'TypeScript' },
+      { label: 'Tailwind CSS', icon: '/techstack/tailwind.svg' },
     ],
-    imageSrc: '/proj/bestari.webp',
-    repo: 'https://github.com/xynnthincc/BESTARI',
-  },
-  {
-    id: 6,
-    number: '06',
-    title: 'Echoes of Steel',
-    description: '2D Survival Action Game',
-    role: 'Game Developer',
-    year: '2026',
-    type: 'Android Game',
-    detailedDescription:
-      'Game survival action 2D top-down untuk Android: virtual joystick 360°, sword knockback, wave spawner, efek game juice, dan sistem HP serta skor. Dibangun dengan Unity (C#) dan shader HLSL.',
-    tech: [
-      { label: 'Unity' },
-      { label: 'C#' },
-      { label: 'HLSL' },
-    ],
-    imageSrc: '/proj/echoes.webp',
-    repo: 'https://github.com/xynnthincc/Echoes-Of-Steel',
+    imageSrc: '/proj/darussurur.webp',
+    repo: 'https://github.com/xynnthincc/spmb-darussurur',
   },
 ];
 
