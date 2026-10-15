@@ -31,12 +31,12 @@ async function writeWebp(pipeline, output, quality) {
 /**
  * Writes `input` to `output` as a 1200x750 WebP, laptop-screen shaped.
  *
- * Uses `fit: 'cover'` anchored top-left: the frame is filled edge to edge and
- * any excess is cropped away. Padding to reach 16:10 was tried first and left a
- * visible band under light-themed pages; upscaling a short screenshot was worse
- * still. These are page screenshots, so the top is always the part worth
- * keeping, and wide captures are cropped from the right so the site logo and
- * left-hand nav stay in frame instead of being sliced through the middle.
+ * Uses `fit: 'cover'` anchored to the top and centred horizontally: the frame
+ * is filled edge to edge and any excess is cropped away. Padding to reach 16:10
+ * was tried first and left a visible band under light-themed pages; upscaling a
+ * short screenshot was worse still. These are page screenshots, so the top is
+ * always the part worth keeping, and wide captures (which have to lose their
+ * sides to reach 16:10) are cropped evenly from both edges.
  *
  * The input is read into memory first: sharp keeps file handles open lazily, and
  * on Windows that blocks overwriting the very file being processed.
@@ -52,7 +52,7 @@ export async function toLaptopFrame(input, output, { quality = 82, retries = 3 }
 					width: LAPTOP_WIDTH,
 					height: LAPTOP_HEIGHT,
 					fit: 'cover',
-					position: 'left top',
+					position: 'top',
 					withoutEnlargement: true,
 				}),
 				output,

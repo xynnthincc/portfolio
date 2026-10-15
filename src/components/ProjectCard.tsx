@@ -131,7 +131,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(
                 alt={`${project.title} screenshot`}
                 fill
                 sizes="(max-width: 768px) 92vw, 30vw"
-                className="object-cover"
+                className="object-cover object-center"
               />
             </motion.div>
           </div>
@@ -161,7 +161,7 @@ const ProjectCard: React.FC<ProjectCardProps> = React.memo(
                     src={project.imageSrc}
                     alt={`${project.title} preview`}
                     fill
-                    className="object-cover"
+                    className="object-cover object-center"
                   />
                   {/* gradient overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />

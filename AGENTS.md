@@ -39,7 +39,7 @@ Projects, experience, nav items, and social links are hardcoded arrays at the to
 
 ## Project previews
 
-Every preview is a **1200x750 WebP** — a laptop-screen frame. The card renders it in `aspect-[16/10]`; do not reintroduce fixed pixel heights or `flex-grow`, which is what made the grid stretch vertically.
+Every preview is a **1200x750 WebP** — a laptop-screen frame. The card renders it in `aspect-[16/10]`; do not reintroduce fixed pixel heights or `flex-grow`, which is what made the grid stretch vertically. Sources narrower than 1200px are never upscaled (blurry), so they keep their own width.
 
 Workflow:
 
@@ -48,7 +48,7 @@ Workflow:
 
 Framing rules live in `scripts/lib/preview-frame.mjs` and are load-bearing:
 
-- `fit: 'cover'` anchored **top-left**. Cover fills the frame with no padding band; padding to 16:10 left a visible stripe under light-themed pages, and centre-anchoring sliced through the site logo. Wide captures crop from the right so the logo survives.
+- `fit: 'cover'` anchored **top, centred horizontally**. Cover fills the frame with no padding band; padding to 16:10 left a visible stripe under light-themed pages. Wide captures (which must lose their sides to reach 16:10) are cropped evenly from both edges, which is what the user asked for — note this can clip a logo pinned to the far left.
 - `fetch-previews.mjs` needs `wait/10`, and tries a viewport capture first with `fullpage` as a fallback — some deployments (Hive) return a blank viewport shot and only render under `fullpage`.
 - Blank captures are detected and rejected rather than written.
 
