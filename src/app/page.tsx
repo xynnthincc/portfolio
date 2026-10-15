@@ -88,7 +88,7 @@ const projects = [
       { label: 'TypeScript' },
     ],
     imageSrc: '/proj/haneul.webp',
-    link: 'https://haneulid.vercel.app',
+    link: 'https://haneulid.store',
     repo: 'https://github.com/xynnthincc/haneulid',
   },
   {
@@ -107,6 +107,7 @@ const projects = [
       { label: 'Blockchain' },
     ],
     imageSrc: '/proj/pactra.webp',
+    link: 'https://pactra.my.id',
     repo: 'https://github.com/xynnthincc/CredChain',
   },
   {
@@ -125,6 +126,7 @@ const projects = [
       { label: 'Tailwind CSS', icon: '/techstack/tailwind.svg' },
     ],
     imageSrc: '/proj/darussurur.webp',
+    link: 'https://smpplusdarussururcimahi.sch.id',
     repo: 'https://github.com/xynnthincc/spmb-darussurur',
   },
 ];

@@ -20,15 +20,14 @@ const items = [
 				items: [
 					{ label: 'Foton', href: 'https://foton-six.vercel.app' },
 					{ label: 'Hive', href: 'https://hive-tawny-eight.vercel.app' },
-					{ label: 'Haneul', href: 'https://haneulid.vercel.app' },
+					{ label: 'Haneul', href: 'https://haneulid.store' },
+					{ label: 'Pactra', href: 'https://pactra.my.id' },
+					{ label: 'Darussurur', href: 'https://smpplusdarussururcimahi.sch.id' },
 				],
 			},
 			{
 				label: 'Source Code',
-				items: [
-					{ label: 'Pactra', href: 'https://github.com/xynnthincc/CredChain' },
-					{ label: 'Darussurur', href: 'https://github.com/xynnthincc/spmb-darussurur' },
-				],
+				items: [{ label: 'GitHub', href: 'https://github.com/xynnthincc' }],
 			},
 		],
 	},
