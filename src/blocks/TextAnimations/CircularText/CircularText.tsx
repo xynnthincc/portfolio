@@ -12,6 +12,8 @@ interface CircularTextProps {
 	className?: string;
 }
 
+// `as const` on the transition generators: framer-motion v14 types `type` as a
+// string literal union, so widening it to `string` is rejected.
 const getRotationTransition = (
 	duration: number,
 	from: number,
@@ -19,16 +21,16 @@ const getRotationTransition = (
 ) => ({
 	from: from,
 	to: from + 360,
-	ease: "linear",
+	ease: "linear" as const,
 	duration: duration,
-	type: "tween",
+	type: "tween" as const,
 	repeat: loop ? Infinity : 0,
 });
 
 const getTransition = (duration: number, from: number) => ({
 	rotate: getRotationTransition(duration, from),
 	scale: {
-		type: "spring",
+		type: "spring" as const,
 		damping: 20,
 		stiffness: 300,
 	},
@@ -74,8 +76,8 @@ const CircularText: React.FC<CircularTextProps> = ({
 					rotate: currentRotation,
 					scale: 1,
 					transition: {
-						rotate: { type: "spring", damping: 20, stiffness: 300 },
-						scale: { type: "spring", damping: 20, stiffness: 300 },
+						rotate: { type: "spring" as const, damping: 20, stiffness: 300 },
+						scale: { type: "spring" as const, damping: 20, stiffness: 300 },
 					},
 				});
 				break;

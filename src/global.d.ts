@@ -26,18 +26,6 @@ declare module '*.jpeg' {
   export default content;
 }
 
-// Declare meshline module
-declare module 'meshline' {
-  export const MeshLineGeometry: any;
-  export const MeshLineMaterial: any;
-}
-
-// Extend JSX IntrinsicElements for meshline
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      meshLineGeometry: any;
-      meshLineMaterial: any;
-    }
-  }
-}
+// react-three/* and meshline were removed together with Lanyard.jsx. If a 3D
+// block comes back, re-add its module declarations (and the meshLineGeometry /
+// meshLineMaterial JSX intrinsics for meshline) here.

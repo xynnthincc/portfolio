@@ -153,7 +153,7 @@ const Threads: React.FC<ThreadsProps> = ({
 		);
 		observer.observe(container);
 
-		let renderer;
+		let renderer: Renderer;
 		try {
 			renderer = new Renderer({ alpha: true });
 		} catch (error) {

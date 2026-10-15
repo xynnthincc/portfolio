@@ -1,17 +1,19 @@
 // src/app/Awards.tsx
 
 "use client";
- 
+
 import React from "react";
+import dynamic from "next/dynamic";
 import BlurText from "@/blocks/TextAnimations/BlurText/BlurText";
-import RollingGallery from "@/blocks/Components/RollingGallery/RollingGallery";
-import FallingText from "@/blocks/TextAnimations/FallingText/FallingText";
-import Threads from "@/blocks/Backgrounds/Threads/Threads";
+import { useIsDesktop } from '@/lib/useIsDesktop';
 import AwardEntry from "./AwardEntry";
 
-const handleAnimationComplete = () => {
-  console.log('Award page animation completed!');
-};
+// Heavy, below-the-fold effects. FallingText runs a Matter.js physics loop and
+// Threads a WebGL render loop, so neither is in the initial payload — and
+// Threads additionally only mounts on desktop.
+const RollingGallery = dynamic(() => import("@/blocks/Components/RollingGallery/RollingGallery"), { ssr: false });
+const FallingText = dynamic(() => import("@/blocks/TextAnimations/FallingText/FallingText"), { ssr: false });
+const Threads = dynamic(() => import("@/blocks/Backgrounds/Threads/Threads"), { ssr: false });
 
 // Define your Award entry data
 const AwardEntriesData = [
@@ -85,19 +87,26 @@ const AwardEntriesData = [
 ];
 
 export default function Awards() {
+  const isDesktop = useIsDesktop();
+
   return (
     <>
       {/* Main content area for Awards */}
       <main className="flex-grow flex flex-col items-center h-full relative pt-20">
-      { /* Make this hidden on mobile */ }
-      {/* Added responsive hidden class */}
-        <div className="hidden md:block" style={{ width: '100%', height: '600px', position: 'absolute', top: '0', zIndex: -1, opacity: 0.5 }}>
-          <Threads
-            amplitude={2.5}
-            distance={0}
-            enableMouseInteraction={false}
-          />
-        </div>
+        {/* WebGL backdrop. Previously hidden with a CSS class only, which meant
+            mobile still created a WebGL context and rendered every frame. */}
+        {isDesktop && (
+          <div
+            className="hidden md:block"
+            style={{ width: '100%', height: '600px', position: 'absolute', top: '0', zIndex: -1, opacity: 0.5 }}
+          >
+            <Threads
+              amplitude={2.5}
+              distance={0}
+              enableMouseInteraction={false}
+            />
+          </div>
+        )}
 
         {/* Award Entries Section */}
         <div className="flex w-full items-center justify-center p-4">
@@ -106,7 +115,6 @@ export default function Awards() {
             delay={50}
             animateBy="letters"
             direction="top"
-            onAnimationComplete={handleAnimationComplete}
             className="text-3xl md:text-7xl font-extrabold text-center"
           />
         </div>
@@ -115,8 +123,10 @@ export default function Awards() {
 
         {/* Adjusted padding for responsiveness */}
         <div className="flex flex-col w-full max-w-5xl mx-auto p-4 md:p-4 my-10 md:my-20"> {/* Changed p-15 to p-4 */}
-          {/* Falling Text for Desktop */}
-          <div className="hidden md:block">
+          {/* One FallingText instance instead of two (desktop + mobile) copies
+              running the Matter.js engine simultaneously. fontSize is an inline
+              style, so the size follows the desktop gate. */}
+          <div className="mb-10 md:mb-0">
             <FallingText
               text={` Besides being a developer and content creator, I am big on joining competitions, like Olympic. It is a great way to work on solving actual problems and meet interesting people. Here are some of the events I've participated in:`}
               highlightWords={["Olympic", "competitions", "problems", "interesting", "events"]}
@@ -124,26 +134,10 @@ export default function Awards() {
               backgroundColor="transparent"
               wireframes={false}
               gravity={0.56}
-              fontSize="2rem"
+              fontSize={isDesktop ? "2rem" : "1rem"}
               mouseConstraintStiffness={0.9}
             />
           </div>
-
-          {/* Falling Text for Mobile */}
-          {/* Adjusted margin bottom */}
-          <div className="md:hidden mb-10"> {/* Changed mb-25 to mb-10 for smaller mobile margin */}
-            <FallingText
-              text={` Besides being a developer and content creator, I am big on joining competitions, like Olympic. It is a great way to work on solving actual problems and meet interesting people. Here are some of the events I've participated in:`}
-              highlightWords={["Olympic", "competitions", "problems", "interesting", "events"]}
-              trigger="hover"
-              backgroundColor="transparent"
-              wireframes={false}
-              gravity={0.56}
-              fontSize="1rem"
-              mouseConstraintStiffness={0.9}
-            />
-          </div>
-
 
           {/* Render Award Entries */}
           {/* Adjusted margin top for responsiveness */}
@@ -163,8 +157,6 @@ export default function Awards() {
             ))}
           </div>
         </div>
-
-
       </main>
 
       {/* Footer Section */}
@@ -173,4 +165,4 @@ export default function Awards() {
       </footer>
     </>
   );
-};
+}

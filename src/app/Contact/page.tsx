@@ -1,18 +1,27 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import BlurText from '@/blocks/TextAnimations/BlurText/BlurText';
-import Squares from '@/blocks/Backgrounds/Squares/Squares';
+import { useIsDesktop } from '@/lib/useIsDesktop';
 
+// Squares is an OGL/WebGL canvas. Lazy + desktop-only: on mobile it used to
+// create a GL context and run a render loop behind a 15%-opacity overlay.
+const Squares = dynamic(() => import('@/blocks/Backgrounds/Squares/Squares'), {
+  ssr: false,
+});
+
+// The old handle was "xynnthinc", which is a different (empty) GitHub account.
 const socialLinks = [
-  { platform: "GitHub", href: "https://github.com/xynnthinc", iconPath: "/icons/github_icon.svg" },
+  { platform: "GitHub", href: "https://github.com/xynnthincc", iconPath: "/icons/github_icon.svg" },
   { platform: "Instagram", href: "https://www.instagram.com/xynnthinc", iconPath: "/icons/instagram_icon.svg" },
   { platform: "Gmail", href: "mailto:zakiimaalik@gmail.com", iconPath: "/icons/gmail_icon.svg" },
 ];
 
 export default function Contact() {
+  const isDesktop = useIsDesktop();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -136,15 +145,17 @@ export default function Contact() {
 
       </div>
 
-      <div className="absolute top-0 left-0 w-full h-full z-[-5] opacity-15">
-        <Squares
-          speed={0.5}
-          squareSize={50}
-          direction="diagonal"
-          borderColor="#fff"
-          hoverFillColor="#222"
-        />
-      </div>
+      {isDesktop && (
+        <div className="absolute top-0 left-0 w-full h-full z-[-5] opacity-15">
+          <Squares
+            speed={0.5}
+            squareSize={50}
+            direction="diagonal"
+            borderColor="#fff"
+            hoverFillColor="#222"
+          />
+        </div>
+      )}
 
       <footer className="flex w-full items-center justify-center p-4 mt-20 border-t border-white/20 text-white/50 text-sm">
         © {new Date().getFullYear()} Zakii Maalik. All rights reserved.

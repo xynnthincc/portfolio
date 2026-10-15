@@ -2,14 +2,14 @@
 
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 
 // Above-the-fold components — imported eagerly (visible immediately)
 import BlurText from "@/blocks/TextAnimations/BlurText/BlurText";
 import TrueFocus from "@/blocks/TextAnimations/TrueFocus/TrueFocus";
-import Threads from "@/blocks/Backgrounds/Threads/Threads";
 import SkillTag from '@/components/SkillTag';
+import { useIsDesktop } from '@/lib/useIsDesktop';
 
 // Below-the-fold components — lazy loaded (only loaded when scrolled into view)
 const TiltedCard = dynamic(() => import("@/blocks/Components/TiltedCard/TiltedCard"), { ssr: false });
@@ -18,56 +18,141 @@ const ProjectCard = dynamic(() => import("@/components/ProjectCard"), { ssr: fal
 const ScrollVelocity = dynamic(() => import("@/blocks/TextAnimations/ScrollVelocity/ScrollVelocity"), { ssr: false });
 const AboutMe = dynamic(() => import("@/components/AboutMe"), { ssr: false });
 
-// Define your projects array
+// Threads pulls in ogl + a WebGL context. It is desktop-only, so it is also
+// lazy loaded — mobile never downloads the chunk at all.
+const Threads = dynamic(() => import("@/blocks/Backgrounds/Threads/Threads"), { ssr: false });
+
+// Define your projects array.
+//
+// Every entry is a real project from github.com/xynnthincc. `year` is the year
+// the repository was created, not a guess. `link` is only set when the project
+// is actually deployed; `repo` is the source. Icons are optional because
+// public/techstack/ has no asset for Kotlin, C#, Unity or blockchain yet — the
+// label is always shown either way.
+//
+// Regenerate the preview screenshots with:
+//   node scripts/fetch-previews.mjs foton=https://foton-six.vercel.app ...
 const projects = [
   {
     id: 1,
     number: '01',
-    title: 'Wellify - Healthy Lifestyle Companion',
-    description: 'Web Developer',
-    techstack: [
-      '/techstack/php.svg',
-      '/techstack/css.svg',
-      '/techstack/js.svg',
+    title: 'Foton',
+    description: 'Physics Study Platform',
+    role: 'Full Stack Developer',
+    year: '2026',
+    type: 'Web App',
+    detailedDescription:
+      'Platform belajar fisika untuk persiapan TKA: 15 materi lengkap dengan penjelasan, rumus, keterangan simbol, serta 75 soal latihan beserta pembahasan.',
+    tech: [
+      { label: 'Next.js', icon: '/techstack/nextjs.svg' },
+      { label: 'TypeScript' },
+      { label: 'Tailwind CSS', icon: '/techstack/tailwind.svg' },
     ],
-    imageSrc: '/proj/wellify.png',
-    link: 'https://wellify.xynnthinc.my.id/',
+    imageSrc: '/proj/foton.webp',
+    link: 'https://foton-six.vercel.app',
+    repo: 'https://github.com/xynnthincc/Foton',
   },
   {
     id: 2,
     number: '02',
-    title: 'Lost and Found',
-    description: 'Web Developer',
-    techstack: [
-      '/techstack/php.svg',
-      '/techstack/tailwind.svg',
-      '/techstack/js.svg',
+    title: 'Hive',
+    description: 'School Forum & Management',
+    role: 'Full Stack Developer',
+    year: '2026',
+    type: 'Web App',
+    detailedDescription:
+      'Platform diskusi dan belajar yang dirancang khusus untuk sekolah: kelas digital yang interaktif, forum, dan manajemen pembelajaran dalam satu tempat.',
+    tech: [
+      { label: 'Next.js', icon: '/techstack/nextjs.svg' },
+      { label: 'TypeScript' },
+      { label: 'Express' },
     ],
-    imageSrc: '/proj/lnf.png',
-    link: 'https://conso-frontend-v2.onrender.com/',
+    imageSrc: '/proj/hive.webp',
+    link: 'https://hive-tawny-eight.vercel.app',
+    repo: 'https://github.com/xynnthincc/Hive',
   },
   {
     id: 3,
     number: '03',
-    title: 'Hummathica',
-    description: 'Mobile App Developer',
-    techstack: [
-      '/techstack/java.svg',
-      '/techstack/xml.svg',
+    title: 'Haneul Gacha Box',
+    description: 'K-Pop Photocard Gacha',
+    role: 'Full Stack Developer',
+    year: '2026',
+    type: 'Web App',
+    detailedDescription:
+      'Blind box photocard K-pop: 5 grup, 45+ member, sistem token untuk penukaran, animasi box opening, dan confetti. Alur lengkap dari landing hingga hasil gacha.',
+    tech: [
+      { label: 'Next.js', icon: '/techstack/nextjs.svg' },
+      { label: 'React', icon: '/techstack/react.svg' },
+      { label: 'Tailwind CSS', icon: '/techstack/tailwind.svg' },
+      { label: 'TypeScript' },
     ],
-    imageSrc: '/proj/hummathica.png',
-    link: '#',
+    imageSrc: '/proj/haneul.webp',
+    link: 'https://haneulid.vercel.app',
+    repo: 'https://github.com/xynnthincc/haneulid',
+  },
+  {
+    id: 4,
+    number: '04',
+    title: 'CredChain',
+    description: 'AI Skill Passport',
+    role: 'Full Stack Developer',
+    year: '2026',
+    type: 'AI + Blockchain',
+    detailedDescription:
+      'Skill passport terverifikasi: AI mengekstrak dan merapikan data kredensial, sementara blockchain BOT Chain memastikan sertifikat dapat disimpan, diverifikasi, dan dibagikan secara aman.',
+    tech: [
+      { label: 'Next.js', icon: '/techstack/nextjs.svg' },
+      { label: 'TypeScript' },
+      { label: 'Blockchain' },
+      { label: 'AI' },
+    ],
+    imageSrc: '/proj/credchain.webp',
+    repo: 'https://github.com/xynnthincc/CredChain',
+  },
+  {
+    id: 5,
+    number: '05',
+    title: 'BESTARI',
+    description: 'Asset Management App',
+    role: 'Android Developer',
+    year: '2026',
+    type: 'Android App',
+    detailedDescription:
+      'Aplikasi Android untuk digitalisasi aset dan sarana prasarana: katalog aset real-time, kontrol akses berbasis peran (Peminjam, Petugas, Admin), pelaporan kerusakan dengan unggah foto, serta ekspor laporan PDF dan Excel.',
+    tech: [
+      { label: 'Kotlin' },
+      { label: 'Jetpack Compose' },
+      { label: 'Firebase' },
+      { label: 'Hilt' },
+    ],
+    imageSrc: '/proj/bestari.webp',
+    repo: 'https://github.com/xynnthincc/BESTARI',
+  },
+  {
+    id: 6,
+    number: '06',
+    title: 'Echoes of Steel',
+    description: '2D Survival Action Game',
+    role: 'Game Developer',
+    year: '2026',
+    type: 'Android Game',
+    detailedDescription:
+      'Game survival action 2D top-down untuk Android: virtual joystick 360°, sword knockback, wave spawner, efek game juice, dan sistem HP serta skor. Dibangun dengan Unity (C#) dan shader HLSL.',
+    tech: [
+      { label: 'Unity' },
+      { label: 'C#' },
+      { label: 'HLSL' },
+    ],
+    imageSrc: '/proj/echoes.webp',
+    repo: 'https://github.com/xynnthincc/Echoes-Of-Steel',
   },
 ];
 
-const handleAnimationComplete = () => {
-  console.log('Animation completed!');
-};
-
 // Define your skill arrays
 const devSkills = [
-  'Next.js', 'Tailwind', 'React', 'Javascript', 'CSS', 'Node.js',
-  'Python', 'Springboot', 'Flutterflow', 'Firebase', 'Supabase', 'MySQL'
+  'TypeScript', 'Next.js', 'React', 'Tailwind CSS', 'Node.js', 'Express',
+  'Laravel', 'MySQL', 'Kotlin', 'C#', 'Unity', 'Firebase'
 ];
 
 const contentSkills = [
@@ -76,14 +161,7 @@ const contentSkills = [
 
 export default function Home() {
   // Skip WebGL entirely on mobile — saves a full WebGL context + shader pipeline
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia('(min-width: 768px)');
-    setIsDesktop(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
+  const isDesktop = useIsDesktop();
 
   return (
     <>
@@ -110,7 +188,6 @@ export default function Home() {
             delay={150}
             animateBy="letters"
             direction="top"
-            onAnimationComplete={handleAnimationComplete}
             className="lg:text-9xl md:text-7xl text-4xl text-center"
           />
         </div>
@@ -129,7 +206,6 @@ export default function Home() {
         <div className="w-full items-center mt-60 mb-4 relative h-[300px] hidden md:block">
           <ScrollVelocity
             texts={['Zakii Maalik', 'Developer Creator Student']}
-            className="custom-scroll-text"
           />
         </div>
 
@@ -181,7 +257,6 @@ export default function Home() {
               delay={150}
               animateBy="words"
               direction="top"
-              onAnimationComplete={handleAnimationComplete}
               className="md:text-7xl text-3xl font-extrabold"
             />
 
@@ -241,7 +316,6 @@ export default function Home() {
             delay={150}
             animateBy="words"
             direction="top"
-            onAnimationComplete={handleAnimationComplete}
             className="md:text-7xl text-3xl font-extrabold"
           />
         </div>
@@ -253,7 +327,6 @@ export default function Home() {
             delay={150}
             animateBy="letters"
             direction="top"
-            onAnimationComplete={handleAnimationComplete}
             className="md:text-7xl text-3xl font-extrabold"
           />
         </div>

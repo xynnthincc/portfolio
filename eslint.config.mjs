@@ -1,23 +1,19 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+// Next.js 16 removed `next lint`, so `npm run lint` runs the ESLint CLI directly
+// against this native flat config. Do not reintroduce FlatCompat here: it is what
+// broke linting previously ("Converting circular structure to JSON").
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
-    // Add a rules property to disable specific rules
     rules: {
-      "@typescript-eslint/no-explicit-any": "off", // Disable the no-explicit-any rule
-      // Add other rules you want to configure here
+      // Vendored react-bits blocks and the 3D asset typings rely on `any`.
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
-];
+]);
 
 export default eslintConfig;

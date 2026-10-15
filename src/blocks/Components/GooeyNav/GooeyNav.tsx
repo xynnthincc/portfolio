@@ -32,6 +32,37 @@ export interface GooeyNavProps {
 	initialActiveIndex?: number;
 }
 
+// Particle helpers live at module scope, not inside the component: they call
+// Math.random(), which must never run during render (react-hooks/purity).
+// They are only ever invoked from event handlers.
+const noise = (n = 1) => n / 2 - Math.random() * n;
+const getXY = (
+	distance: number,
+	pointIndex: number,
+	totalPoints: number,
+): [number, number] => {
+	const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
+	return [distance * Math.cos(angle), distance * Math.sin(angle)];
+};
+const createParticle = (
+	i: number,
+	t: number,
+	d: [number, number],
+	r: number,
+	particleCount: number,
+	colors: number[],
+) => {
+	const rotate = noise(r / 10);
+	return {
+		start: getXY(d[0], particleCount - i, particleCount),
+		end: getXY(d[1] + noise(7), particleCount - i, particleCount),
+		time: t,
+		scale: 1 + noise(0.2),
+		color: colors[Math.floor(Math.random() * colors.length)],
+		rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10,
+	};
+};
+
 const GooeyNav: React.FC<GooeyNavProps> = ({
 	items,
 	animationTime = 600,
@@ -52,40 +83,14 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 	const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	
-	const noise = (n = 1) => n / 2 - Math.random() * n;
-	const getXY = (
-		distance: number,
-		pointIndex: number,
-		totalPoints: number,
-	): [number, number] => {
-		const angle =
-			((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
-		return [distance * Math.cos(angle), distance * Math.sin(angle)];
-	};
-	const createParticle = (
-		i: number,
-		t: number,
-		d: [number, number],
-		r: number,
-	) => {
-		const rotate = noise(r / 10);
-		return {
-			start: getXY(d[0], particleCount - i, particleCount),
-			end: getXY(d[1] + noise(7), particleCount - i, particleCount),
-			time: t,
-			scale: 1 + noise(0.2),
-			color: colors[Math.floor(Math.random() * colors.length)],
-			rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10,
-		};
-	};
 	const makeParticles = (element: HTMLElement) => {
-		const d: [number, number] = particleDistances;
+	const d: [number, number] = particleDistances;
 		const r = particleR;
 		const bubbleTime = animationTime * 2 + timeVariance;
 		element.style.setProperty("--time", `${bubbleTime}ms`);
 		for (let i = 0; i < particleCount; i++) {
 			const t = animationTime * 2 + noise(timeVariance * 2);
-			const p = createParticle(i, t, d, r);
+			const p = createParticle(i, t, d, r, particleCount, colors);
 			element.classList.remove("active");
 			setTimeout(() => {
 				const particle = document.createElement("span");

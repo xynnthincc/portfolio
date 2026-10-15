@@ -16,12 +16,11 @@ interface AwardEntryProps {
 
 // Mapping of trophy types to image paths
 const trophyImagePaths: Record<string, string> = {
-  first: '/trophies/gold_trophy.png', // <-- Replace with actual paths relative to your public directory
-  second: '/trophies/silver_trophy.png', // <-- Replace with actual paths
-  third: '/trophies/bronze_trophy.png', // <-- Replace with actual paths
-  special: '/trophies/special_trophy.png', // <-- Replace with actual paths
-  participant: '/trophies/participant_trophy.png', // <-- Replace with actual paths
-  // Add more mappings here if you have different trophy types
+  first: '/trophies/gold_trophy.png',
+  second: '/trophies/silver_trophy.png',
+  third: '/trophies/bronze_trophy.png',
+  special: '/trophies/special_trophy.png',
+  participant: '/trophies/participant_trophy.png',
 };
 
 const AwardEntry: React.FC<AwardEntryProps> = ({
@@ -63,18 +62,22 @@ const AwardEntry: React.FC<AwardEntryProps> = ({
                 <Image
                   src={imageSrc}
                   alt={`Project for ${title}`}
-                  className="object-contain w-full rounded-sm" // w-full h-full makes it responsive within its container
-                  width={200} // Add appropriate width and height for Image component
+                  className="object-contain w-full rounded-sm"
+                  width={200}
                   height={300}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  loading="lazy"
                 />
               </Link>
             ) : (
               <Image
                 src={imageSrc}
                 alt={`Project for ${title}`}
-                className="object-contain w-full h-full rounded-sm" // w-full h-full makes it responsive within its container
-                width={500} // Add appropriate width and height for Image component
+                className="object-contain w-full h-full rounded-sm"
+                width={500}
                 height={300}
+                sizes="(max-width: 768px) 100vw, 33vw"
+                loading="lazy"
               />
             )
           ) : (

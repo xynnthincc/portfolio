@@ -30,7 +30,8 @@ const FallingText: React.FC<FallingTextProps> = ({
 	const textRef = useRef<HTMLDivElement | null>(null);
 	const canvasContainerRef = useRef<HTMLDivElement | null>(null);
 
-	const [effectStarted, setEffectStarted] = useState(false);
+	// "auto" starts immediately; "scroll"/"hover" are started from the effect below.
+	const [effectStarted, setEffectStarted] = useState(trigger === "auto");
 
 	useEffect(() => {
 		if (!textRef.current) return;
@@ -53,10 +54,6 @@ const FallingText: React.FC<FallingTextProps> = ({
 	}, [text, highlightWords]);
 
 	useEffect(() => {
-		if (trigger === "auto") {
-			setEffectStarted(true);
-			return;
-		}
 		if (trigger === "scroll" && containerRef.current) {
 			const observer = new IntersectionObserver(
 				([entry]) => {
@@ -80,6 +77,7 @@ const FallingText: React.FC<FallingTextProps> = ({
 
 		if (!containerRef.current || !canvasContainerRef.current) return;
 
+		const canvasContainer = canvasContainerRef.current;
 		const containerRect = containerRef.current.getBoundingClientRect();
 		const width = containerRect.width;
 		const height = containerRect.height;
@@ -90,7 +88,7 @@ const FallingText: React.FC<FallingTextProps> = ({
 		engine.world.gravity.y = gravity;
 
 		const render = Render.create({
-			element: canvasContainerRef.current,
+			element: canvasContainer,
 			engine,
 			options: {
 				width,
@@ -205,9 +203,8 @@ const FallingText: React.FC<FallingTextProps> = ({
 		return () => {
 			Render.stop(render);
 			Runner.stop(runner);
-			const container = canvasContainerRef.current;
-			if (render.canvas && container) {
-				container.removeChild(render.canvas);
+			if (render.canvas && canvasContainer) {
+				canvasContainer.removeChild(render.canvas);
 			}
 			World.clear(engine.world, false);
 			Engine.clear(engine);

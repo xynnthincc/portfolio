@@ -26,6 +26,26 @@ function useElementWidth(ref) {
   return width;
 }
 
+/**
+ * ScrollVelocity is vendored as plain JSX, so TypeScript infers `texts = []`
+ * as `never[]` and rejects any caller passing strings. These JSDoc annotations
+ * give TS the real prop types (checkJs is off, so nothing else changes).
+ *
+ * @param {{
+ *   scrollContainerRef?: React.RefObject<HTMLElement>,
+ *   texts?: string[],
+ *   velocity?: number,
+ *   className?: string,
+ *   damping?: number,
+ *   stiffness?: number,
+ *   numCopies?: number,
+ *   velocityMapping?: { input: number[], output: number[] },
+ *   parallaxClassName?: string,
+ *   scrollerClassName?: string,
+ *   parallaxStyle?: React.CSSProperties,
+ *   scrollerStyle?: React.CSSProperties
+ * }} props
+ */
 export const ScrollVelocity = ({
   scrollContainerRef,
   texts = [],
